@@ -7,14 +7,14 @@ begin {
         $VerbosePreference = "continue"
     }
 
-    # List of app names to find
+    # List of app names to remove
     $AppsToRemove = @(
         "Microsoft.MicrosoftSolitaireCollection",
         "SumBS",
         "Microsoft.BingWeather"
     )
 
-    # Counts successfull app lookups
+    # Counts successfull app remove
     [int]$AppxCount = 0
     #[int]$AppxProvisionedCount = 0
 
