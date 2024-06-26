@@ -16,9 +16,7 @@ begin {
 
     # Counts successfull app lookups
     [int]$AppxCount = 0
-    [int]$AppxProvisionedCount = 0
-
-    # $AppProvisionedPackages = Get-AppxProvisionedPackage -Online
+    #[int]$AppxProvisionedCount = 0
 
     function RemovePackage {    
         try {
@@ -40,7 +38,7 @@ begin {
             throw $_
         }
     }
-
+    <#
     function RemoveProvisionedPackage {
         try {
             $ProvisionedPackage = Get-AppxProvisionedPackage -Online | where-object {$_.DisplayName -like $App} | Select-Object -ExpandProperty PackageName
@@ -62,18 +60,22 @@ begin {
         }
        
     }
+    #>
 }
+
 
 Process {
     if ($($AppsToRemove.Count) -ne 0) {
         Write-Host -ForegroundColor Yellow "Apps to remove:"
         $AppsToRemove
         
-        # List of failed removals
+        # List of successfull or failed removals
         $SuccessAppx = New-Object -TypeName System.Collections.ArrayList
-        $SuccessAppxProvisioned = New-Object -TypeName System.Collections.ArrayList
         $FailedAppx = New-Object -TypeName System.Collections.ArrayList
-        $FailedAppxProvisioned = New-Object -TypeName System.Collections.ArrayList
+
+        #$SuccessAppxProvisioned = New-Object -TypeName System.Collections.ArrayList
+        #$FailedAppxProvisioned = New-Object -TypeName System.Collections.ArrayList
+        
 
         foreach ($App in $AppsToRemove) {
             Write-Verbose "Searching for $App"
@@ -91,6 +93,7 @@ Process {
             }
 
             # Seems the RemovePackageFunction also removes it from the provisioned list as well
+            <#
             try {
                 RemoveProvisionedPackage $App -ErrorAction Stop
                 $SuccessAppxProvisioned.AddRange(@($App))
@@ -102,6 +105,7 @@ Process {
                 Write-Host -ForegroundColor Red "Error: " $_
                 $FailedAppxProvisioned.AddRange(@($App))
             }
+            #>
             
         }
 
@@ -118,7 +122,8 @@ Process {
             Write-Host -ForegroundColor Green "All AppxPackages removed"
         }
 
-        # AppxPrivisionedPackages summary
+        # AppxProvisionedPackages summary
+        <#
         Write-Verbose "Final AppxProvisionedCount: $AppxProvisionedCount"
         if (!([string]::IsNullOrEmpty($SuccessAppxProvisioned))) {
             Write-Host -ForegroundColor Yellow "AppxProvisionedPackages removed:"
@@ -130,6 +135,7 @@ Process {
         } else {
             Write-Host -ForegroundColor Green "All AppxProvisionedPackages removed"
         }
+        #>
 
     }  else {
         Write-Host -ForegroundColor Red "No listed apps"
