@@ -23,11 +23,10 @@ begin {
 
     function FindPackage {    
         try {
-            Write-Verbose "Searching for $App"
             $Package = Get-AppxPackage -Name $App | Select-Object -ExpandProperty PackageFullName
 
             if (!([string]::IsNullOrEmpty($Package))) {
-                Write-Verbose "AppxPackage found: $Package"
+                Write-Verbose "- AppxPackage found: $Package"
             } else {
                 throw "Unable to find AppxPackage: $App"
             }
@@ -42,7 +41,7 @@ begin {
             $ProvisionedPackage = Get-AppxProvisionedPackage -Online | where-object {$_.DisplayName -like $App} | Select-Object -ExpandProperty PackageName
 
             if (!([string]::IsNullOrEmpty($ProvisionedPackage))) {
-                Write-Verbose "AppxProvionedPackage found: $Package"
+                Write-Verbose "- AppxProvionedPackage found: $ProvisionedPackage"
             } else {
                 throw "Unable to find AppxProvisionedpackage: $App"
             }
@@ -66,14 +65,16 @@ Process {
         $FailedAppxProvisioned = New-Object -TypeName System.Collections.ArrayList
 
         foreach ($App in $AppsToFind) {
+            Write-Verbose "Searching for $App"
+            
             try {
                 FindPackage $App -ErrorAction Stop
                 $SuccessAppx.AddRange(@($App))
                 $AppxCount ++
-                Write-Verbose "Current AppCount: $AppxCount"
+                Write-Verbose "- Current AppxPackage Count: $AppxCount"
             }
             catch {
-                Write-Verbose "AppxPackage Error"
+                Write-Verbose "--- AppxPackage Error ---"
                 Write-Host -ForegroundColor Red "Error: " $_
                 $FailedAppx.AddRange(@($App))
             }
@@ -82,10 +83,10 @@ Process {
                 FindProvisionedPackage $App -ErrorAction Stop
                 $SuccessAppxProvisioned.AddRange(@($App))
                 $AppxProvisionedCount ++
-                Write-Verbose "Current AppCount: $AppxProvisionedCount"
+                Write-Verbose "- Current AppxProvisionedPackage Count: $AppxProvisionedCount"
             }
             catch {
-                Write-Verbose "AppxProvisionedPackage Error"
+                Write-Verbose "--- AppxProvisionedPackage Error ---"
                 Write-Host -ForegroundColor Red "Error: " $_
                 $FailedAppxProvisioned.AddRange(@($App))
             }
