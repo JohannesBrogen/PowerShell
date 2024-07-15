@@ -6,7 +6,7 @@ Some description
 .PARAMETER args
 write output flags
 .EXAMPLE
-.\test.ps1 -verbose, -debug
+.\test.ps1
 #>
 
 #Region try-catch
@@ -36,4 +36,49 @@ function Get-RandomMessage {
         Default {Write-Output "Fallerallera!"; Write-Debug "Default"}
     }
 }
+Get-RandomMessage
 #Endregion 
+
+#Region Get information about the computer
+Get-CimInstance win32_operatingsystem | Select-Object -Property Name, SerialNumber | Format-List
+Get-CimInstance Win32_ComputerSystem | Format-List
+#Endregion
+
+#Region variable scopes
+function Display-VariableScope {
+    Write-Output $var
+    Write-Output $global:globalvar
+    Write-Output $script:scriptvar
+    Write-Output $private:privatevar
+
+    $functionvar = "function var"
+    $private:functionprivatevar = "private function var"
+    $global:functionglobalvar = "global function var"
+}
+
+$var = 'This is $var'
+Get-Variable var -Scope local
+$global:globalvar = "global var"
+$script:scriptvar = "script var"
+$private:privatevar = "private var"
+
+Display-VariableScope
+$functionprivatevar
+$functionglobalvar
+#Endregion
+
+#Region For-each object
+ForEach-Object -InputObject (1..10) {
+    $_
+} | Measure-Object
+
+$object = [ordered]@{
+    one = 1
+    two = 2
+    three = 3
+}
+
+ForEach-Object -InputObject $object {
+    $_
+}
+#Endregion
