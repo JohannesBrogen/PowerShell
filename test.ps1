@@ -45,7 +45,7 @@ Get-CimInstance Win32_ComputerSystem | Format-List
 #Endregion
 
 #Region variable scopes
-function Display-VariableScope {
+function Test-VariableScope {
     Write-Output $var
     Write-Output $global:globalvar
     Write-Output $script:scriptvar
@@ -62,7 +62,7 @@ $global:globalvar = "global var"
 $script:scriptvar = "script var"
 $private:privatevar = "private var"
 
-Display-VariableScope
+Test-VariableScope
 $functionprivatevar
 $functionglobalvar
 #Endregion
